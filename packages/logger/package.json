@@ -1,0 +1,12 @@
+{
+  "name": "@sdev/logger",
+  "private": true,
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsup",
+    "lint": "eslint . --ext .ts"
+  },
+  "dependencies": {
+    "backtracker": "^3.3.2"
+  }
+}

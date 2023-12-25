@@ -1,0 +1,13 @@
+{
+  "name": "@sdev/worker",
+  "private": true,
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -p .",
+    "lint": "eslint . --ext .ts"
+  },
+  "dependencies": {
+    "@sdev/commands": "workspace:*",
+    "@sdev/config": "workspace:*"
+  }
+}

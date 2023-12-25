@@ -1,0 +1,13 @@
+{
+  "name": "@sdev/gateway",
+  "private": true,
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsup",
+    "lint": "eslint . --ext .ts"
+  },
+  "dependencies": {
+    "@sdev/config": "workspace:*",
+    "@sdev/logger": "workspace:*"
+  }
+}
