@@ -7,7 +7,7 @@ let config = {
     // discord
     discordTokens: {
         master: "",
-        dev: "MTE5NjQ3NTU4MzU2ODI4OTg4Mg.GU8Jd-.R7W7rMZRIup_j5sANy9YS8ArfBCT6UrCvaBpM8"
+        dev: ""
     },
     presence: {
         status: 'online',
