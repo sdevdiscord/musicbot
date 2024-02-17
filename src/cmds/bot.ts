@@ -2,6 +2,10 @@ import { ApplicationCommandOptionType } from "discord-api-types/v10";
 import { ICommand } from "../types";
 import { EmbedBuilder, Guild } from "discord.js";
 
+function fmtUp(time:number) {
+    return time < 10 ? `0${time}` : time
+}
+
 export default {
     data: {
         name: "bot",
@@ -38,7 +42,7 @@ export default {
                 let totalHours = Math.floor(totalMins / 60)
                 let totalDays  = Math.floor(totalHours / 24)
 
-                return await interaction.reply({content: `Bot has been up for: \`${totalDays}:${totalHours % 24}:${totalMins % 60}:${totalSecs % 60}\``, ephemeral:true})
+                return await interaction.reply({content: `Bot has been up for: \`${fmtUp(totalDays)}:${fmtUp(totalHours % 24)}:${fmtUp(totalMins % 60)}:${fmtUp(totalSecs % 60)}\``, ephemeral:true})
             }
             case 'stats': {
                 let guildcount = (await client.cluster.broadcastEval(`this.guilds.cache.size`)).reduce((acc:any, guildCount:any) => Number(acc + guildCount), 0);
@@ -57,7 +61,7 @@ export default {
                         value: `Memory Usage: \`${memUsed}MB\``
                     })
 
-                return await interaction.reply({embeds: [embed]})
+                return await interaction.reply({embeds: [embed], ephemeral: true})
             }
         }
 
