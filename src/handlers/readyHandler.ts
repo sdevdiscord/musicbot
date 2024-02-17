@@ -32,4 +32,8 @@ export default function (c: MusicBot) {
         });
         c.user?.setPresence(pres)
     }, 1000 * 60 * 5)
+
+    setInterval(async () => {
+        await c.posthog.flushAsync()
+    }, 1000 * 15)
 }

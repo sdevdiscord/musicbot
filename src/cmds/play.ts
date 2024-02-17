@@ -77,6 +77,7 @@ export default {
         res.tracks.forEach((track: UnresolvedTrack | Track) => {
             track.userData = {}
             track.userData['userId'] = interaction.user.id 
+            track.userData['username'] = interaction.user.tag
         })
 
         await player.queue.add(res.loadType == "playlist" ? res.tracks : res.tracks[0])
@@ -90,13 +91,14 @@ export default {
         if (!player.playing) await player.play()
 
         client.posthog.capture({
-            distinctId: interaction.user.id as string,
+            distinctId: interaction.user.tag,
             event: res.loadType == "playlist" ? "playlist requested" : "track requested",
             properties: {
-                title: res.loadType == "playlist" ? res.playlist?.title : res.tracks[0].info.title,
+                title: res.loadType == "playlist" ? res.playlist?.name : res.tracks[0].info.title,
                 query,
                 provider,
-                guildId: interaction.guildId
+                guildId: interaction.guildId,
+                userId: interaction.user.id
             }
         })
     }

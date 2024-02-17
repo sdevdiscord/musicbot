@@ -3,13 +3,13 @@ import { ICommand } from "../types";
 
 export default {
     data: {
-        name: "stop",
-        description: "Stops the bot."
+        name: "skip",
+        description: "Skips a song."
     },
     middlewares: [isInVoiceChannel, isPlayingInGuild, isInSameVoiceChannel],
     async run(interaction, options, client) {
         let player = client.music.getPlayer(interaction.guildId!)
-        player.destroy()
-        return interaction.reply({content:'Left the channel.'})
+        player.skip()
+        return interaction.reply({content:'Skipped.'})
     },
 } as ICommand

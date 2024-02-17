@@ -1,5 +1,6 @@
 import { ApplicationCommandOptionType } from "discord-api-types/v10";
 import { ICommand } from "../types";
+import { EmbedBuilder, Guild } from "discord.js";
 
 export default {
     data: {
@@ -14,6 +15,11 @@ export default {
             {
                 name: "uptime",
                 description: "Gets the bot's uptime",
+                type: ApplicationCommandOptionType.Subcommand
+            },
+            {
+                name: "stats",
+                description: "Global stats",
                 type: ApplicationCommandOptionType.Subcommand
             }
         ]
@@ -33,6 +39,25 @@ export default {
                 let totalDays  = Math.floor(totalHours / 24)
 
                 return await interaction.reply({content: `Bot has been up for: \`${totalDays}:${totalHours % 24}:${totalMins % 60}:${totalSecs % 60}\``, ephemeral:true})
+            }
+            case 'stats': {
+                let guildcount = (await client.cluster.broadcastEval(`this.guilds.cache.size`)).reduce((acc:any, guildCount:any) => Number(acc + guildCount), 0);
+                let usercount = (await client.cluster.broadcastEval(c => {
+                    return c.guilds.cache.reduce((acc: any, guild: Guild) => Number(acc + guild.memberCount),0)
+                })).reduce((acc:any, userCount:any) => Number(acc + userCount), 0);
+                let memUsed = Math.round(process.memoryUsage().heapUsed / 1_000_000) /* MB */
+
+                let embed = new EmbedBuilder()
+                    .setTitle('Global Stats')
+                    .addFields({
+                        name: "Discord Stats",
+                        value: `Server Count: \`${guildcount}\`\nUser Count: \`${usercount}\``
+                    }, {
+                        name: "Process Stats",
+                        value: `Memory Usage: \`${memUsed}MB\``
+                    })
+
+                return await interaction.reply({embeds: [embed]})
             }
         }
 

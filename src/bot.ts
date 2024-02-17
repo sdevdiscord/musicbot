@@ -6,7 +6,7 @@ import { APIApplicationCommandExt, IButtonInteraction, ICommand, IInteraction } 
 import { GuildShardPayload, LavalinkManager } from "lavalink-client";
 import { PostHog } from "posthog-node";
 
-const { discordTokens, branch, nodes, posthogApiKey } = require('../config')
+const { discordTokens, branch, nodes, posthog } = require('../config')
 
 export class MusicBot extends Client {
     public cluster = new ClusterClient(this)
@@ -27,10 +27,12 @@ export class MusicBot extends Client {
             useUnresolvedData: true
         },
         queueOptions:{
-            maxPreviousTracks:10
+            maxPreviousTracks:5
         }
     })
-    public posthog = new PostHog(posthogApiKey)
+    public posthog = new PostHog(posthog.apiKey, {
+        host: posthog.host
+    })
 
     public cmds = new Collection<string, ICommand>()
     public restCmds: APIApplicationCommandExt[] = []

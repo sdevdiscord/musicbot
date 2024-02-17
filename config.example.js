@@ -21,8 +21,11 @@ let config = {
 
     totalShards: 'auto',
 
-    // posthog api key
-    posthogApiKey: "<api_key_here>",
+    // posthog
+    posthog: {
+        apiKey: "<api_key_here>",
+        host: "https://eu.posthog.com",
+    },
 
     // your lavalink nodes
     nodes: [
