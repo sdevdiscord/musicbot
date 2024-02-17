@@ -5,8 +5,8 @@ node_modules
 .turbo
 dist
 
-./config.js
-./test.js
+config.js
+test.js
 
 modules/*
 !modules/example-module.ts
