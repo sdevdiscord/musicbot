@@ -4,3 +4,9 @@ node_modules
 **/.turbo
 .turbo
 dist
+
+config.js
+test.js
+
+modules/*
+!modules/example-module.ts

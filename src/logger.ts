@@ -8,7 +8,7 @@ const oldLog = {
 }
 
 type LogType = "info" | "warn" | "error"
-const scopeMaxLogLen = 20
+const scopeMaxLogLen = 25
 
 function pref(type: LogType) {
     const stack = BackTracker.stack
