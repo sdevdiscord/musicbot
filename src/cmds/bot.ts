@@ -2,6 +2,8 @@ import { ApplicationCommandOptionType } from "discord-api-types/v10";
 import { ICommand } from "../types";
 import { EmbedBuilder, Guild } from "discord.js";
 
+const { embedAccent } = require('../../config')
+
 function fmtUp(time:number) {
     return time < 10 ? `0${time}` : time
 }
@@ -60,6 +62,7 @@ export default {
                         name: "Process Stats",
                         value: `Memory Usage: \`${memUsed}MB\``
                     })
+                    .setColor(embedAccent)
 
                 return await interaction.reply({embeds: [embed], ephemeral: true})
             }

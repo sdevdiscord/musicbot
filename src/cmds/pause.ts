@@ -3,13 +3,13 @@ import { ICommand } from "../types";
 
 export default {
     data: {
-        name: "skip",
-        description: "Skips a song."
+        name: "pause",
+        description: "Pauses the playback."
     },
     middlewares: [isInVoiceChannel, isPlayingInGuild, isInSameVoiceChannel],
     async run(interaction, options, client) {
         let player = client.music.getPlayer(interaction.guildId!)
-        await player.skip()
-        return interaction.reply({content:'Skipped.'})
+        await player.pause()
+        return interaction.reply({content:'Playback paused.'})
     },
 } as ICommand

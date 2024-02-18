@@ -19,6 +19,8 @@ let config = {
         }]
     },
 
+    embedAccent: "#000000",
+
     totalShards: 'auto',
 
     // posthog

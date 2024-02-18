@@ -27,7 +27,7 @@ export async function isVoiceChannelSpeakable(interaction: CommandInteraction, c
 export async function isPlayingInGuild(interaction: CommandInteraction, client: MusicBot){
     if (!client.music.getPlayer(interaction.guildId!)) {
         await interaction.reply({
-            content: 'Currently not playing in this',
+            content: 'Currently not playing in this server.',
             ephemeral: true
         })
         return false
