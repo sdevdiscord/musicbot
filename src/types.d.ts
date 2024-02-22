@@ -1,5 +1,5 @@
 import {APIApplicationCommand, Snowflake} from "discord-api-types/v10";
-import { CommandInteraction, CommandInteractionOptionResolver, ButtonInteraction, Interaction } from "discord.js";
+import { CommandInteraction, CommandInteractionOptionResolver, ButtonInteraction, Interaction, AutocompleteInteraction } from "discord.js";
 import { MusicBot } from "./bot";
 
 export interface APIApplicationCommandExt extends APIApplicationCommand{
@@ -18,6 +18,7 @@ export interface ICommand {
     data: APIApplicationCommandExt,
     middlewares: CommandMiddlewareFunction[]
     run: (function(CommandInteraction, CommandInteractionOptionResolver, MusicBot): Promise<any>)
+    autocomplete?: (function(AutocompleteInteraction, MusicBot): Promise<any>)
 }
 
 export interface IInteraction {

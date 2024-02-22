@@ -1,13 +1,15 @@
-import {MusicBot} from "../bot";
 import '../logger'
 
-const { presence, version } = require("../../config");
+import {MusicBot} from "../bot";
+import mongoose from 'mongoose';
+
+const { presence, version, mongoDB } = require("../../config");
 
 export default function (c: MusicBot) {
     c.once('ready', async () => {
         console.log(`Logged in as ${c.user?.tag} with a shard id of ${c.cluster.id}`);
 
-        let guildcount = (await c.cluster.broadcastEval(`this.guilds.cache.size`)).reduce((acc:any, guildCount:any) => Number(acc + guildCount), 0);
+        let guildcount = (await c.application?.fetch())?.approximateGuildCount
         console.log(`[SHARD ${c.cluster.id}] In ${guildcount} servers`);
 
         let pres = presence
@@ -15,6 +17,9 @@ export default function (c: MusicBot) {
             element.name = element.name.replace('{server_count}',guildcount).replace('{version}',version)
         });
         c.user?.setPresence(pres)
+
+        // init mongoose
+        await mongoose.connect(mongoDB)
 
         // init music client
         c.music.init({
@@ -24,7 +29,7 @@ export default function (c: MusicBot) {
     })
 
     setInterval(async () => {
-        let guildcount = (await c.cluster.broadcastEval(`this.guilds.cache.size`)).reduce((acc:any, guildCount:any) => Number(acc + guildCount), 0);
+        let guildcount = (await c.application?.fetch())?.approximateGuildCount
 
         let pres = presence
         pres.activities.forEach(element => {

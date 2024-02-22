@@ -3,6 +3,8 @@ import { ICommand } from "../types";
 import { isInVoiceChannel, isVoiceChannelSpeakable } from "../middlewares/vcMiddlewares";
 import { GuildMember } from "discord.js";
 import { SearchPlatform, Track, UnresolvedTrack } from "lavalink-client";
+import { MUser } from "../models/user";
+import { ITrack } from "../models/track";
 
 export default {
     data: {
@@ -13,7 +15,8 @@ export default {
                 name: "query",
                 description: "The song query",
                 type: ApplicationCommandOptionType.String,
-                required: true
+                required: true,
+                autocomplete: true
             },
             {
                 name: "provider",
@@ -97,9 +100,21 @@ export default {
                 title: res.loadType == "playlist" ? res.playlist?.name : res.tracks[0].info.title,
                 query,
                 provider,
+                guildName: client.guilds.cache.get(player.guildId)?.name,
                 guildId: interaction.guildId,
                 userId: interaction.user.id
             }
         })
+    },
+
+    autocomplete: async (interaction, client) => {
+        let user = await (await MUser.findByUserId(interaction.user.id)).populate<{favourites: ITrack[]}>('favourites')
+        if (user == null) return await interaction.respond([])
+
+        const query = interaction.options.getFocused().toLowerCase()
+
+        const filtered = user.favourites.filter(f => f.name.toLowerCase().includes(query))
+
+        await interaction.respond(filtered.map(f => ({ name: f.name, value: f.url })))
     }
 } as ICommand

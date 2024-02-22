@@ -5,6 +5,8 @@ import {readdirSync} from "node:fs";
 import { APIApplicationCommandExt, IButtonInteraction, ICommand, IInteraction } from "./types";
 import { GuildShardPayload, LavalinkManager } from "lavalink-client";
 import { PostHog } from "posthog-node";
+import mongoose from 'mongoose';
+import cache from 'ts-cache-mongoose'
 
 const { discordTokens, branch, nodes, posthog } = require('../config')
 
@@ -53,6 +55,12 @@ export class MusicBot extends Client {
             shardCount: getInfo().TOTAL_SHARDS,
             shards: getInfo().SHARD_LIST
         });
+
+        // init cache for mongoose
+        cache.init(mongoose,{
+            defaultTTL: "60 seconds",
+            engine: "memory"
+        })
 
         for (const file of this.handlerFiles){
             require(`./handlers/${file}`).default(this)

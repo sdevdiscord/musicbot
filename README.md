@@ -6,6 +6,7 @@ there are some features that are missing from the real bot since
 i have to earn some money from this bot back lol. i don't really
 like doing that but it is what it is.
 
-# thing you need to run this bot
+# things you need to run this bot
+- NodeJS v18.19.1
 - posthog (logging purposes ofc)
 - a mongodb database

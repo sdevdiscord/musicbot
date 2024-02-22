@@ -28,7 +28,7 @@ export default function(client: MusicBot) {
                                 customId = customId.replace(match[0],'')
                                 memberId = match[0].replace(/[{}]/g,'')
                             }
-                            if (interaction.user?.id != memberId) {await interaction.deferUpdate(); break;}
+                            if (memberId && interaction.user?.id != memberId) {await interaction.deferUpdate(); break;}
                         }
 
                         let updated = await client.interactions.get(customId)?.run(interaction,client)
@@ -38,6 +38,7 @@ export default function(client: MusicBot) {
 
                         await interaction.update({
                             components: [],
+                            embeds: [],
                             content: `something happened`
                         })
                     }

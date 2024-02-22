@@ -23,6 +23,9 @@ let config = {
 
     totalShards: 'auto',
 
+    // mongoDB
+    mongoDB: "",
+
     // posthog
     posthog: {
         apiKey: "<api_key_here>",

@@ -15,13 +15,14 @@ export default function(client: MusicBot) {
     })
 
     // track events
-    client.music.on("trackStart", (player, track) =>{
+    client.music.on("trackEnd", (player, track) =>{
         client.posthog.capture({
             distinctId: track.userData!.username as string,
             event: "track played",
             properties: {
                 title: track.info.title,
                 length: Math.floor(track.info.duration / 1000),
+                guildName: client.guilds.cache.get(player.guildId)?.name,
                 guildId: player.guildId,
                 userId: track.userData!.userId
             }

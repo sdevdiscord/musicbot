@@ -47,7 +47,7 @@ export default {
                 return await interaction.reply({content: `Bot has been up for: \`${fmtUp(totalDays)}:${fmtUp(totalHours % 24)}:${fmtUp(totalMins % 60)}:${fmtUp(totalSecs % 60)}\``, ephemeral:true})
             }
             case 'stats': {
-                let guildcount = (await client.cluster.broadcastEval(`this.guilds.cache.size`)).reduce((acc:any, guildCount:any) => Number(acc + guildCount), 0);
+                let guildcount = (await client.application?.fetch())?.approximateGuildCount
                 let usercount = (await client.cluster.broadcastEval(c => {
                     return c.guilds.cache.reduce((acc: any, guild: Guild) => Number(acc + guild.memberCount),0)
                 })).reduce((acc:any, userCount:any) => Number(acc + userCount), 0);
