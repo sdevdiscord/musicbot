@@ -2,9 +2,11 @@ import { ApplicationCommandOptionType } from "discord-api-types/v10";
 import { ICommand } from "../types";
 import { isInVoiceChannel, isVoiceChannelSpeakable } from "../middlewares/vcMiddlewares";
 import { GuildMember } from "discord.js";
-import { SearchPlatform, Track, UnresolvedTrack } from "lavalink-client";
+import { PluginInfo, SearchPlatform, SearchResult, Track, UnresolvedTrack } from "lavalink-client";
 import { MUser } from "../models/user";
 import { ITrack } from "../models/track";
+import { IPlaylist, MPlaylist } from "../models/playlist";
+import { isObjectIdOrHexString } from "mongoose";
 
 export default {
     data: {
@@ -74,8 +76,29 @@ export default {
 
         if (!player.connected) await player.connect()
 
-        let res = await player.search({ query, source: provider }, interaction.user)
-        if (!res || !res.tracks?.length) return await interaction.reply({content: 'No songs found.', ephemeral:true})
+        let res: SearchResult
+
+        if (isObjectIdOrHexString(query)) {
+            let _playlist = await MPlaylist.findById(query)
+            if (!_playlist) return await interaction.reply({content: 'Playlist not found.', ephemeral:true})
+            let playlist = await _playlist.populate<{ tracks: ITrack[] }>('tracks')
+
+            res = {
+                loadType: "playlist",
+                tracks: playlist.tracks.map(track => client.music.utils.buildUnresolvedTrack({ title: track.name, uri: track.url }, interaction.user)),
+                exception: null,
+                playlist: {
+                    title: playlist.name,
+                    selectedTrack: null,
+                    name: playlist.name,
+                    duration: 0
+                },
+                pluginInfo: {}
+            } as SearchResult
+        } else {
+            res = (await player.search({ query, source: provider }, interaction.user)) as SearchResult
+            if (!res || !res.tracks?.length) return await interaction.reply({content: 'No songs found.', ephemeral:true})
+        }
 
         res.tracks.forEach((track: UnresolvedTrack | Track) => {
             track.userData = {}
@@ -108,13 +131,19 @@ export default {
     },
 
     autocomplete: async (interaction, client) => {
-        let user = await (await MUser.findByUserId(interaction.user.id)).populate<{favourites: ITrack[]}>('favourites')
+        let user = await (await MUser.findByUserId(interaction.user.id)).populate<{favourites: ITrack[], playlists: IPlaylist[]}>(['favourites', 'playlists'])
         if (user == null) return await interaction.respond([])
 
         const query = interaction.options.getFocused().toLowerCase()
 
-        const filtered = user.favourites.filter(f => f.name.toLowerCase().includes(query))
+        let complete: {name: string, value: string}[] = []
 
-        await interaction.respond(filtered.map(f => ({ name: f.name, value: f.url })))
+        const favFiltered = user.favourites.filter(f => f.name.toLowerCase().includes(query))
+        complete.push(...favFiltered.map(f => ({ name: f.name, value: f.url })))
+
+        const playlistFiltered = user.playlists.filter(f => f.name.toLowerCase().includes(query))
+        complete.push(...playlistFiltered.map(f => ({ name: `Playlist | ${f.name}`, value: f._id.toHexString() })))
+
+        await interaction.respond(complete)
     }
 } as ICommand

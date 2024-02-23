@@ -1,7 +1,7 @@
-import { CommandInteraction, GuildMember, VoiceChannel } from 'discord.js'
+import { ButtonInteraction, CommandInteraction, GuildMember, VoiceChannel } from 'discord.js'
 import { MusicBot } from '../bot'
 
-export async function isInVoiceChannel(interaction: CommandInteraction, client: MusicBot){
+export async function isInVoiceChannel(interaction: CommandInteraction | ButtonInteraction, client: MusicBot){
     if(!(interaction.member as GuildMember).voice.channelId) {
         await interaction.reply({
             content: 'You must be in a voice channel to use this command!',
@@ -12,7 +12,7 @@ export async function isInVoiceChannel(interaction: CommandInteraction, client: 
     return true
 }
 
-export async function isVoiceChannelSpeakable(interaction: CommandInteraction, client: MusicBot){
+export async function isVoiceChannelSpeakable(interaction: CommandInteraction | ButtonInteraction, client: MusicBot){
     let voice = (interaction.member as GuildMember).voice.channel! as VoiceChannel
     if(!voice.joinable || !voice.speakable) {
         await interaction.reply({
@@ -24,8 +24,9 @@ export async function isVoiceChannelSpeakable(interaction: CommandInteraction, c
     return true
 }
 
-export async function isPlayingInGuild(interaction: CommandInteraction, client: MusicBot){
-    if (!client.music.getPlayer(interaction.guildId!)) {
+export async function isPlayingInGuild(interaction: CommandInteraction | ButtonInteraction, client: MusicBot){
+    let player = client.music.getPlayer(interaction.guildId!)
+    if (!player || !player.queue.current) {
         await interaction.reply({
             content: 'Currently not playing in this server.',
             ephemeral: true
@@ -35,7 +36,7 @@ export async function isPlayingInGuild(interaction: CommandInteraction, client: 
     return true
 }
 
-export async function isInSameVoiceChannel(interaction: CommandInteraction, client: MusicBot){
+export async function isInSameVoiceChannel(interaction: CommandInteraction | ButtonInteraction, client: MusicBot){
     let voice = (interaction.member as GuildMember).voice.channelId!
     let player = client.music.getPlayer(interaction.guildId!)
     if(voice !== player.voiceChannelId) {

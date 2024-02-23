@@ -40,8 +40,8 @@ export default {
         switch (subcommand) {
             case 'add': {
                 if (!(await isInVoiceChannel(interaction, client)) 
-                    || !(await isInSameVoiceChannel(interaction,client)) 
-                    || !(await isPlayingInGuild(interaction,client))) return;
+                    || !(await isPlayingInGuild(interaction,client))
+                    || !(await isInSameVoiceChannel(interaction,client))) return;
 
                 let currentTrack = client.music.getPlayer(interaction.guildId!).queue.current
                 let track = await MTrack.findByUrl(currentTrack?.info.uri!)
@@ -59,6 +59,7 @@ export default {
             case 'remove': {
                 const song = options.getString('song', true)
                 let i = user.favourites.findIndex((v) => v.toString() == song)
+                if (i == -1) return await interaction.reply({ content: "Couldn't find the song.", ephemeral: true })
                 let track = await MTrack.findById(user.favourites.splice(i,1)).cache().exec()
                 await user.save()
 

@@ -12,12 +12,12 @@ export async function sendUDSPrompt(interaction: ChatInputCommandInteraction) {
 
     ac.addComponents(
         new ButtonBuilder()
-            .setCustomId('uds-accept')
+            .setCustomId(`uds-accept{${interaction.user.id}}`)
             .setEmoji('✅')
             .setLabel('Accept')
             .setStyle(ButtonStyle.Success),
         new ButtonBuilder()
-            .setCustomId('uds-decline')
+            .setCustomId(`uds-decline{${interaction.user.id}}`)
             .setEmoji('❌')
             .setLabel('Decline')
             .setStyle(ButtonStyle.Danger)
