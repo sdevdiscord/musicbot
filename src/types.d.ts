@@ -24,10 +24,10 @@ export interface ICommand {
 export interface IInteraction {
     name: string;
     middlewares: MiddlewareFunction[]
-    run: (function(Interaction, MusicBot): Promise<boolean>)
+    run: (function(Interaction, MusicBot, ...string): Promise<boolean>)
 }
 
 export interface IButtonInteraction extends IInteraction {
     middlewares: ButtonMiddlewareFunction[]
-    run: (function(ButtonInteraction, MusicBot): Promise<boolean>)
+    run: (function(ButtonInteraction, MusicBot, ...string): Promise<boolean>)
 }

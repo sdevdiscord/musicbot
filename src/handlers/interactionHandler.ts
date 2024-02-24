@@ -3,6 +3,9 @@ import "../logger"
 import { InteractionType } from "discord.js";
 import { MusicBot } from "../bot";
 
+const memberIdRegEx = /{\d*}/g
+const customArgsRegEx = /\(.*\)/g
+
 export default function(client: MusicBot) {
     for (const file of client.interactionFiles) {
         const interactions = require(`../interactions/${file}`);
@@ -22,7 +25,6 @@ export default function(client: MusicBot) {
                         let customId = interaction.customId
                         let memberId
                         {
-                            let memberIdRegEx = /{\d*}/g
                             const match = customId.match(memberIdRegEx)
                             if (match) {
                                 customId = customId.replace(match[0],'')
@@ -31,7 +33,16 @@ export default function(client: MusicBot) {
                             if (memberId && interaction.user?.id != memberId) {await interaction.deferUpdate(); break;}
                         }
 
-                        let updated = await client.interactions.get(customId)?.run(interaction,client)
+                        let customArgs: string[] = []
+                        {
+                            const match = customId.match(customArgsRegEx)
+                            if (match) {
+                                customId = customId.replace(match[0],'')
+                                customArgs = match[0].replace(/[()]/g,'').split(',')
+                            }
+                        }
+
+                        let updated = await client.interactions.get(customId)?.run(interaction,client, ...customArgs)
                         if (!updated) await interaction.deferUpdate()
                     } catch (e) {
                         console.log(e)
