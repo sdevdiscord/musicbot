@@ -148,8 +148,9 @@ export default {
         const value = query.value.toLowerCase()
         switch (query.name) {
             case 'playlist': {
-                let user = await (await MUser.findByUserId(interaction.user.id)).populate<{ playlists: IPlaylist[] }>('playlists')
-                if (user == null) return await interaction.respond([])
+                let dbUser = await MUser.findByUserId(interaction.user.id)
+                if (dbUser == null) return await interaction.respond([])
+                let user = await dbUser.populate<{playlists: IPlaylist[]}>('playlists')
 
                 const filtered = user.playlists.filter(f => f.name.toLowerCase().includes(value))
                 return await interaction.respond(filtered.map(f => ({

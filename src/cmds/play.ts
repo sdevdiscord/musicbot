@@ -131,8 +131,9 @@ export default {
     },
 
     autocomplete: async (interaction, client) => {
-        let user = await (await MUser.findByUserId(interaction.user.id)).populate<{favourites: ITrack[], playlists: IPlaylist[]}>(['favourites', 'playlists'])
-        if (user == null) return await interaction.respond([])
+        let dbUser = await MUser.findByUserId(interaction.user.id)
+        if (dbUser == null) return await interaction.respond([])
+        let user = await dbUser.populate<{favourites: ITrack[], playlists: IPlaylist[]}>(['favourites', 'playlists'])
 
         const query = interaction.options.getFocused().toLowerCase()
 
