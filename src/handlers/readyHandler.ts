@@ -29,7 +29,7 @@ export default function (c: MusicBot) {
     })
 
     setInterval(async () => {
-        let guildcount = (await c.application?.fetch())?.approximateGuildCount
+        let guildcount = (await c.cluster.broadcastEval(c => c.guilds.cache.size)).reduce((acc:any, guildCount:any) => Number(acc + guildCount), 0);
 
         let pres = presence
         pres.activities.forEach(element => {
