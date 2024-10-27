@@ -1,5 +1,3 @@
-const { ActivityType } = require("discord-api-types/v10")
-
 let config = {
     branch: "master",
     version: "3",
@@ -8,15 +6,6 @@ let config = {
     discordTokens: {
         master: "",
         // dev: ""
-    },
-
-    presence: {
-        status: 'online',
-        activities: [{
-            name: 'bot',
-            type: ActivityType.Playing,
-            url : 'https://google.com'
-        }]
     },
 
     embedAccent: "#000000",

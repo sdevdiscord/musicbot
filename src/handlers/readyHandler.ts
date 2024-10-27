@@ -2,8 +2,9 @@ import '../logger'
 
 import {MusicBot} from "../bot";
 import mongoose from 'mongoose';
+import { ActivityType } from 'discord.js';
 
-const { presence, version, mongoDB } = require("../../config");
+const { version, mongoDB } = require("../../config");
 
 export default function (c: MusicBot) {
     c.once('ready', async () => {
@@ -12,11 +13,15 @@ export default function (c: MusicBot) {
         let guildcount = (await c.application?.fetch())?.approximateGuildCount
         console.log(`[SHARD ${c.cluster.id}] In ${guildcount} servers`);
 
-        let pres = presence
-        pres.activities.forEach(element => {
-            element.name = element.name.replace('{server_count}',guildcount).replace('{version}',version)
-        });
-        c.user?.setPresence(pres)
+        c.user?.setPresence({
+            status: 'online',
+            activities: [
+                {
+                    name: `${guildcount} servers. version: ${version}`,
+                    type: ActivityType.Listening
+                }
+            ]
+        })
 
         // init mongoose
         await mongoose.connect(mongoDB)
@@ -29,13 +34,17 @@ export default function (c: MusicBot) {
     })
 
     setInterval(async () => {
-        let guildcount = (await c.application?.fetch())?.approximateGuildCount
+        let guildcount = (await c.cluster.broadcastEval(c => c.guilds.cache.size)).reduce((acc:any, guildCount:any) => Number(acc + guildCount), 0);
 
-        let pres = presence
-        pres.activities.forEach(element => {
-            element.name = element.name.replace('{server_count}',guildcount).replace('{version}',version)
-        });
-        c.user?.setPresence(pres)
+        c.user?.setPresence({
+            status: 'online',
+            activities: [
+                {
+                    name: `${guildcount} servers. version: ${version}`,
+                    type: ActivityType.Listening
+                }
+            ]
+        })
     }, 1000 * 60 * 5)
 
     setInterval(async () => {

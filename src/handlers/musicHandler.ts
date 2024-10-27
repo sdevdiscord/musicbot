@@ -16,6 +16,7 @@ export default function(client: MusicBot) {
 
     // track events
     client.music.on("trackEnd", (player, track) =>{
+        if (track.info.isStream) return;
         client.posthog.capture({
             distinctId: track.userData!.username as string,
             event: "track played",

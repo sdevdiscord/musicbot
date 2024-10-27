@@ -110,7 +110,7 @@ export default {
 
         await interaction.reply({
             content: res.loadType == "playlist" 
-                ? `Added playlist \`${res.playlist?.name}\` to the queue with ${res.tracks.length} songs.`
+                ? `Added playlist \`${res.playlist?.name ? res.playlist.name : res.playlist?.title}\` to the queue with ${res.tracks.length} songs.`
                 : `Added to the queue: \`${res.tracks[0].info.title}\``
         })
 
@@ -120,7 +120,9 @@ export default {
             distinctId: interaction.user.tag,
             event: res.loadType == "playlist" ? "playlist requested" : "track requested",
             properties: {
-                title: res.loadType == "playlist" ? res.playlist?.name : res.tracks[0].info.title,
+                title: res.loadType == "playlist" 
+                        ? (res.playlist?.name ? res.playlist.name : res.playlist?.title) 
+                        : res.tracks[0].info.title,
                 query,
                 provider,
                 guildName: client.guilds.cache.get(player.guildId)?.name,
@@ -131,8 +133,9 @@ export default {
     },
 
     autocomplete: async (interaction, client) => {
-        let user = await (await MUser.findByUserId(interaction.user.id)).populate<{favourites: ITrack[], playlists: IPlaylist[]}>(['favourites', 'playlists'])
-        if (user == null) return await interaction.respond([])
+        let dbUser = await MUser.findByUserId(interaction.user.id)
+        if (dbUser == null) return await interaction.respond([])
+        let user = await dbUser.populate<{favourites: ITrack[], playlists: IPlaylist[]}>(['favourites', 'playlists'])
 
         const query = interaction.options.getFocused().toLowerCase()
 
