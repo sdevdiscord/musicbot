@@ -7,7 +7,7 @@ const manager = new ClusterManager(`${__dirname}/bot.ts`,{
     totalShards,
     shardsPerClusters:2,
     mode:'process',
-    execArgv:['-r','ts-node/register/transpile-only'],
+    execArgv:['-r','tsx/cjs'],
     token: discordTokens[branch]
 })
 
