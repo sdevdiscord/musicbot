@@ -10,3 +10,7 @@ test.js
 
 modules/*
 !modules/example-module.ts
+
+apps
+packages
+application.yml
