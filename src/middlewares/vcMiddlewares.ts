@@ -1,4 +1,4 @@
-import { ButtonInteraction, CommandInteraction, GuildMember, VoiceChannel } from 'discord.js'
+import { ButtonInteraction, ChannelType, CommandInteraction, GuildMember, VoiceChannel } from 'discord.js'
 import { MusicBot } from '../bot'
 
 export async function isInVoiceChannel(interaction: CommandInteraction | ButtonInteraction, client: MusicBot){
@@ -14,7 +14,7 @@ export async function isInVoiceChannel(interaction: CommandInteraction | ButtonI
 
 export async function isVoiceChannelSpeakable(interaction: CommandInteraction | ButtonInteraction, client: MusicBot){
     let voice = (interaction.member as GuildMember).voice.channel! as VoiceChannel
-    if(!voice.joinable || !voice.speakable) {
+    if(!voice.joinable || (!voice.speakable && voice.type !== ChannelType.GuildStageVoice)) {
         await interaction.reply({
             content: 'I can\'t speak/join this voice channel.',
             ephemeral: true
