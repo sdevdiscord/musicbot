@@ -1,3 +1,6 @@
+# no longer maintained!!!!!!!!!!!!!!!!!!!!!
+you can use it but not commercially
+
 # musicbot
 the official repo of s!music(bot) v3
 
